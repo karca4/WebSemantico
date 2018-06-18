@@ -1,37 +1,125 @@
 var http = require('http');
-//var dt = require('./myFirstModule');   non serve -prova-
-
 
 var express = require('express');
 var cors = require('cors')
-
+var request = require('request');
 var app = express();
-app.use(cors({credentials: true, origin: true}))
+app.use(cors({ credentials: true, origin: true }))
 
-/*															 non serve -prova-
-http.createServer(function (req, res) {  
-    res.writeHead(200, {'Content-Type': 'text/html'});
-	 res.write("Hello World! The date and time are currently: " + dt.myDateTime());
-    res.end();
-}).listen(8080); 
-*/
-app.get('/provaGet', function(req, res) {
-	console.log("prova get");
-	res.end();
+//server che invia le richieste fatte dall'app a jena
+
+
+var prefix = 'prefix :      <http://www.semanticweb.org/carmi/ontologies/2018/5/esameWS#> \n\
+prefix owl:   <http://www.w3.org/2002/07/owl#>\n\
+prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\
+prefix xsd:   <http://www.w3.org/2001/XMLSchema#> \n\
+prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n';
+
+var urlServer = 'http://localhost:3030/WebSemantico/query';
+
+app.get('/getArchitettura', function (req, res) {
+	var query = prefix + 'SELECT ?subject WHERE { ?subject a :pdi_architettonico}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
 });
 
-app.post('/provaPost', function(req, res) {
-	console.log("prova post");
-	res.end();
+app.get('/getArcheologia', function (req, res) {
+	var query = prefix + 'SELECT ?subject WHERE { ?subject a :pdi_archeologico}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
 });
 
-app.get('/', function(req, res) {
-	console.log("index");
-	res.end();
+app.get('/getMusei', function (req, res) {
+	var query = prefix + 'SELECT ?subject WHERE { ?subject a :pdi_museo}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
 });
 
-/* indirizzo della wifi. altrimenti da nexus 5x non riuscivo a connettermi al pc(server) 
-tramite ionic3 native http */
-app.listen(3000, '192.168.1.129', function() {
-    console.log('Express server listening on port 3000');
+app.get('/getChiese', function (req, res) {
+	var query = prefix + 'SELECT ?subject WHERE { ?subject a :chiesa}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
+});
+
+app.get('/getMonumenti', function (req, res) {
+	var query = prefix + 'SELECT ?subject WHERE { ?subject a :monumento}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
+});
+
+app.get('/getCoordinate', function (req, res) {
+	var query = prefix + 'SELECT Distinct ?subject ?coords WHERE { \n\
+		{?subject a :monumento.\n\
+		  ?subject :hasCoords ?coords}\n\
+	  Union\n\
+		  {?subject a :chiesa.\n\
+		  ?subject :hasCoords ?coords}\n\
+	  Union\n\
+		  {?subject a :pdi_archeologico.\n\
+		  ?subject :hasCoords ?coords}\n\
+	  Union\n\
+		  {?subject a :pdi_architettonico.\n\
+		  ?subject :hasCoords ?coords}\n\
+	  Union\n\
+		  {?subject a :pdi_museo.\n\
+		  ?subject :hasCoords ?coords}}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
+});
+
+// app.post('/provaPost', function (req, res) {
+// 	console.log("prova post");
+// 	res.end();
+// });
+
+// app.get('/', function (req, res) {
+// 	console.log("index");
+// 	res.end();
+// });
+
+
+var server = app.listen(3000, function () {
+    console.log("express server running on port ", server.address().port);
 });

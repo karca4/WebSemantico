@@ -1,24 +1,32 @@
+<!--
+  Generated template for the StoriaArtePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
 <ion-header>
+
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Punti storico-artistici</ion-title>
   </ion-navbar>
+
 </ion-header>
 
+
 <ion-content padding>
-  <h2>Lezioni di GeoStoria</h2>
   <ion-list>
-    <ion-item (click)="getAmbientali()">
+    <ion-item (click)="getChiese()">
       <ion-avatar item-start>
         <img src="assets/imgs/profile.png">
       </ion-avatar>
-      <h3>Punti ambientali</h3>
+      <h3>Chiese</h3>
       <ion-icon name="arrow-forward" item-end></ion-icon>
     </ion-item>
-    <ion-item (click)="getCulturali()">
+    <ion-item (click)="getMonumenti()">
       <ion-avatar item-start>
         <img src="assets/imgs/profile.png">
       </ion-avatar>
-      <h3>Punti culturali</h3>
+      <h3>Monumenti</h3>
       <ion-icon name="arrow-forward" item-end></ion-icon>
     </ion-item>
   </ion-list>
