@@ -40,6 +40,10 @@ export class JenaProvider {
     return this.http.get(this.server+'getCoordinate', {}, {}) 
   }
 
+  search(){
+    return this.http.get(this.server+'search', {}, {}) 
+  }
+
 
   // postRequest(){
   //   console.log("post");

@@ -109,6 +109,29 @@ app.get('/getCoordinate', function (req, res) {
 
 });
 
+
+app.get('/search', function (req, res) {
+	var query = prefix + 'SELECT Distinct ?subject WHERE { \n\
+		{?subject a :monumento.}\n\
+	  Union\n\
+		  {?subject a :chiesa.}\n\
+	  Union\n\
+		  {?subject a :pdi_archeologico.}\n\
+	  Union\n\
+		  {?subject a :pdi_architettonico.}\n\
+	  Union\n\
+		  {?subject a :pdi_museo.}}';
+	request(urlServer,
+		{
+			qs: {
+				query: query
+			}
+		}, (err, result, body) => {
+			res.send(body)
+		})
+
+});
+
 // app.post('/provaPost', function (req, res) {
 // 	console.log("prova post");
 // 	res.end();
