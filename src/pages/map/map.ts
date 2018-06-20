@@ -27,7 +27,7 @@ export class MapPage {
   private markers = [];
   private markerCluster: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private jena: JenaProvider,private iab: InAppBrowser) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private jena: JenaProvider) {
 
   }
 
@@ -47,14 +47,23 @@ export class MapPage {
       el.innerHTML = data.data;
       var length = el.getElementsByTagName('uri').length;
       for (let i = 0; i < length; i++) {
-        // console.log(el.getElementsByTagName('uri').item(i).textContent.substr(28)+ " "+el.getElementsByTagName('literal').item(i).textContent);
         var location = el.getElementsByTagName('literal').item(i).textContent.split(' ');
         var loc = new google.maps.LatLng(location[0], location[1]);
         var marker = new google.maps.Marker({
           position: loc
         });
-        marker.addListener('click', () => {
-          this.dettagli(el.getElementsByTagName('uri').item(i).textContent.substr(28));
+        var infowindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(marker, 'click', function () {
+          infowindow.setContent("<h7 id='clickableItem'>" + el.getElementsByTagName('uri').item(i).textContent.substr(28) + "</h7>");
+          infowindow.open(this.map, this);
+          infowindow.addListener('domready',()=>{
+            var clickableItem = document.getElementById('clickableItem');
+            clickableItem.addEventListener('click', function() {
+              let iab : InAppBrowser = new InAppBrowser();
+              iab.create("http://dbpedia.org/resource/" + el.getElementsByTagName('uri').item(i).textContent.substr(28));
+              return false;
+            });
+          })
         });
         this.markers.push(marker);
         this.markerCluster.addMarker(marker);
@@ -64,10 +73,4 @@ export class MapPage {
     });
   }
 
-
-
-  dettagli(element:string): boolean {
-    this.iab.create("http://dbpedia.org/resource/"+element);
-    return false;
-  }   
 }
