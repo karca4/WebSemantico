@@ -10,7 +10,7 @@ import { HTTP } from '@ionic-native/http';
 */
 @Injectable()
 export class JenaProvider {
-  private server = 'http://localhost:3000/';
+  private server = 'http://172.19.63.131:3000/';
 
   constructor(private http: HTTP) {
     console.log('Hello JenaProvider Provider');
